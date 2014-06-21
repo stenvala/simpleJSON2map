@@ -1,0 +1,14 @@
+{
+    "name": "Antti Stenvall",
+    "number": 5,
+    "array": [1,2,3,5,120,41,"keke",{"veke": 23}],
+    "temp": ["a","b","bdsa"],
+    "subcell": {
+        "string": "This is string",
+        "number": 2.3,
+        "array": [1,2,3],
+        "temp": {"keke": 13, "new": [1, 2, 3]}
+    },
+    "boolValue": true
+    
+}
