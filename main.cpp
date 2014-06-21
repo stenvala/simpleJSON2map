@@ -14,23 +14,30 @@ int main(int argc, char **argv) {
   std::string inputFile = std::string(argv[1]);
   // init json2map structure
   json::json2map *json = new json::json2map(inputFile);      
+  json->prettyPrint();
+  std::cout << std::endl << std::endl;
   // exaple of testing keys
   if (!json->keyExists("notDefined","subcell")){
     std::cout << "Given key does not exists" << std::endl;
   }  
-  if (json->keyExists("subcell")){
-    std::cout << "Given key exists" << std::endl;
+  if (json->keyExists("number","subcell")){    
+    std::cout << "Double: " << json->getValue<double>("number","subcell") << std::endl;
   }
-  // examples for getting values  
-  std::cout << "Double: " << json->getValue<double>("number","subcell") << std::endl;
-  std::cout << "String: " << json->getValue<std::string>("string","subcell") << std::endl;
-  std::cout << "Bool: " << json->getValue<bool>("boolValue") << std::endl;
-  std::cout << std::endl << std::endl;
-  std::vector<int> temp = json->getVector<int>("array","subcell");
-  // fails
-  //std::vector<int> temp2 = json->getVector<int>("array");
-  // example for printing the contents of json file
-  json->prettyPrint();
+  if (json->keyExists("array","subcell")){
+    std::vector<double> temp = json->getVector<double>("array","subcell");
+    std::cout << "Array" << std::endl;
+    for (unsigned int i=0;i<temp.size();i++){
+      std::cout << "Value " << i << ": " << temp.at(i) << std::endl;
+    }
+  }    
+  std::vector<std::string> empty;
+  std::cout << "Value type of root is: " << json->getValueType(empty) << std::endl;
+  if (json->keyExists("temp")){
+    std::cout << "Value type of temp is: " << json->getValueType("temp") << std::endl;
+  }
+  if (json->keyExists("name")){
+    std::cout << "Value type of name is: " << json->getValueType("name") << std::endl;
+  }
   delete json;
   return EXIT_SUCCESS;
 }
