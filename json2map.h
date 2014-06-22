@@ -13,25 +13,29 @@ namespace json {
     private:        
         // recursive map
         std::map<std::string, json::json2map*> json_;        
-        bool hasValue_; // if recursive map isn't there, then hasValue_ = true
-        json_spirit::Value value_; // and this is the value     
-        json_spirit::Value root_; // and this is the root json given in constructor, not added to map
-        json_spirit::Value getRoot();
+        bool hasOnlyValue_; // if recursive map isn't there, then hasValue_ = true
+        json_spirit::Value value_; // and this is the value                    
         void init(json_spirit::Value value);      
         void prettyPrint(unsigned int indent);        
     public:
         json2map(std::string fileName);
-        json2map(json_spirit::Value value);
-        void prettyPrint();                
+        json2map(json_spirit::Value value);        
+        // see template getValue and getVector below
+        json_spirit::Value getValue();
         json_spirit::Value getValue(std::string val1);
         json_spirit::Value getValue(std::string val2, std::string val1);
         json_spirit::Value getValue(std::vector<std::string> stack);
         json_spirit::Value_type getValueType(std::string val1);
         json_spirit::Value_type getValueType(std::string val2, std::string val1);
         json_spirit::Value_type getValueType(std::vector<std::string> stack);
+        std::vector<json::json2map*> getVector();
+        std::vector<json::json2map*> getVector(std::string val1);
+        std::vector<json::json2map*> getVector(std::string val2, std::string val1);
+        std::vector<json::json2map*> getVector(std::vector<std::string> stack);
         bool keyExists(std::string val1);
         bool keyExists(std::string val1,std::string val2);
         bool keyExists(std::vector<std::string> stack);
+        void prettyPrint();                        
         // functions with templates need to be in header file
         // shortcuts for value getters
         template<typename Type>
@@ -74,6 +78,7 @@ namespace json {
         template<typename Type>
         std::vector<Type> getVector(std::vector<std::string> stack) {
             if (stack.size() == 0) {
+                // if this is not array, then it is the fault of user
                 json_spirit::Array arr = value_.get_array();
                 std::vector<Type> val;
                 for (unsigned int j = 0; j < arr.size(); ++j) {

@@ -21,12 +21,12 @@ namespace json {
     json_spirit::Value value;
     json_spirit::read_stream(is, value);
     is.close();
-    root_ = value;
+    value_ = value;
     init(value);
   }
 
   json2map::json2map(json_spirit::Value value) {
-    root_ = value;
+    value_ = value;
     init(value);
   }
 
@@ -49,7 +49,7 @@ namespace json {
 
   json_spirit::Value json2map::getValue(std::vector<std::string> stack) {
     if (stack.size() == 0) {
-      return getRoot();
+      return value_;
     } else {
       std::string value = stack.at(stack.size() - 1);
       stack.pop_back();
@@ -71,15 +71,39 @@ namespace json {
   }
 
   json_spirit::Value_type json2map::getValueType(std::vector<std::string> stack) {
-    if (stack.size() == 0) {
-      return getRoot().type();
-    } else {
-      std::string value = stack.at(stack.size() - 1);
-      stack.pop_back();
-      return json_[value]->getValueType(stack);
-    }
+    json_spirit::Value val = getValue(stack);
+    return val.type();
+  }
+
+  std::vector<json::json2map*> json2map::getVector() {
+    std::vector<std::string> stack;    
+    return getVector(stack);
   }
   
+  std::vector<json::json2map*> json2map::getVector(std::string val1) {
+    std::vector<std::string> stack;  
+    stack.push_back(val1);
+    return getVector(stack);
+  }
+  
+  std::vector<json::json2map*> json2map::getVector(std::string val2, std::string val1) {
+    std::vector<std::string> stack;
+    stack.push_back(val2);
+    stack.push_back(val1);
+    return getVector(stack);
+  }
+
+  std::vector<json::json2map*> json2map::getVector(std::vector<std::string> stack) {
+    json_spirit::Value value = getValue(stack);
+    std::vector<json::json2map*> data;
+    json_spirit::Array arr = value.get_array();
+    for (unsigned int i = 0; i < arr.size(); ++i) {
+      json2map *json = new json::json2map(arr[i]);
+      data.push_back(json);
+    }
+    return data;
+  }
+
   // check if keys exist
 
   bool json2map::keyExists(std::string val1) {
@@ -107,7 +131,6 @@ namespace json {
         return json_[value]->keyExists(stack);
       }
     }
-
   }
 
   // printer
@@ -121,7 +144,7 @@ namespace json {
   // destructor, free memory
 
   json2map::~json2map() {
-    if (!hasValue_) {
+    if (!hasOnlyValue_) {
       typedef std::map<std::string, json::json2map*>::iterator it_type;
       for (it_type iterator = json_.begin(); iterator != json_.end(); iterator++) {
         delete iterator->second;
@@ -132,14 +155,10 @@ namespace json {
   /*
    * Private   
    */
-  
-  json_spirit::Value json2map::getRoot() {
-    return root_;
-  }
 
   void json2map::prettyPrint(unsigned int ind) {
     unsigned int newInd = ind + 2;
-    if (hasValue_) {
+    if (hasOnlyValue_) {
       switch (value_.type()) {
         case json_spirit::array_type:
           json::prettyPrint(ind, value_);
@@ -171,14 +190,13 @@ namespace json {
   void json2map::init(json_spirit::Value value) {
     if (value.type() == json_spirit::obj_type) {
       json_spirit::Object variables = value.get_obj();
-      hasValue_ = false;
+      hasOnlyValue_ = false;
       for (unsigned int i = 0; i < variables.size(); ++i) {
         json::json2map *json = new json::json2map(variables[i].value_);
         json_[variables[i].name_] = json;
       }
     } else {
-      hasValue_ = true;
-      value_ = value;
+      hasOnlyValue_ = true;
     }
   }
 
