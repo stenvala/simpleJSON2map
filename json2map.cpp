@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include "json_spirit_reader_template.h"
-#include "json_spirit_writer_template.h"
-
+// there are no writer methods in use
+// #include "json_spirit_writer_template.h"
 #include "json2map.h"
 
 namespace json {
@@ -34,6 +34,10 @@ namespace json {
 
   // get value as json_spirit::Value (first the shortcuts))
 
+  json_spirit::Value json2map::getValue() {
+    return value_;
+  }
+
   json_spirit::Value json2map::getValue(std::string val1) {
     std::vector<std::string> stack;
     stack.push_back(val1);
@@ -49,12 +53,16 @@ namespace json {
 
   json_spirit::Value json2map::getValue(std::vector<std::string> stack) {
     if (stack.size() == 0) {
-      return value_;
+      return getValue();
     } else {
       std::string value = stack.at(stack.size() - 1);
       stack.pop_back();
       return json_[value]->getValue(stack);
     }
+  }
+
+  json_spirit::Value_type json2map::getValueType() {
+    return value_.type();
   }
 
   json_spirit::Value_type json2map::getValueType(std::string val1) {
@@ -76,16 +84,16 @@ namespace json {
   }
 
   std::vector<json::json2map*> json2map::getVector() {
-    std::vector<std::string> stack;    
+    std::vector<std::string> stack;
     return getVector(stack);
   }
-  
+
   std::vector<json::json2map*> json2map::getVector(std::string val1) {
-    std::vector<std::string> stack;  
+    std::vector<std::string> stack;
     stack.push_back(val1);
     return getVector(stack);
   }
-  
+
   std::vector<json::json2map*> json2map::getVector(std::string val2, std::string val1) {
     std::vector<std::string> stack;
     stack.push_back(val2);
@@ -96,15 +104,17 @@ namespace json {
   std::vector<json::json2map*> json2map::getVector(std::vector<std::string> stack) {
     json_spirit::Value value = getValue(stack);
     std::vector<json::json2map*> data;
-    json_spirit::Array arr = value.get_array();
-    for (unsigned int i = 0; i < arr.size(); ++i) {
-      json2map *json = new json::json2map(arr[i]);
-      data.push_back(json);
+    if (value.type() == json_spirit::array_type) {
+      json_spirit::Array arr = value.get_array();
+      for (unsigned int i = 0; i < arr.size(); ++i) {
+        json2map *json = new json::json2map(arr[i]);
+        data.push_back(json);
+      }
     }
     return data;
   }
 
-  // check if keys exist
+  // check if key exist
 
   bool json2map::keyExists(std::string val1) {
     std::vector<std::string> stack;
@@ -168,7 +178,7 @@ namespace json {
           // with object type one shouldn't be here because then hasValue_ is false
       }
     } else {
-      // iterate to the next level
+      // proceed to the next level
       std::cout << "{" << std::endl;
       typedef std::map<std::string, json::json2map*>::iterator it_type;
       bool isFirst = true;

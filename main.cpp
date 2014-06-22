@@ -17,14 +17,14 @@ int main(int argc, char **argv) {
   json->prettyPrint();
   std::cout << std::endl << std::endl;
   // exaple of testing keys
-  if (!json->keyExists("notDefined","subcell")){
+  if (!json->keyExists("notDefined")){
     std::cout << "Given key does not exists" << std::endl;
   }  
-  if (json->keyExists("number","subcell")){    
-    std::cout << "Double: " << json->getValue<double>("number","subcell") << std::endl;
+  if (json->keyExists("pi","data")){    
+    std::cout << "Double: " << json->getValue<double>("pi","data") << std::endl;
   }
-  if (json->keyExists("array","subcell")){
-    std::vector<double> temp = json->getVector<double>("array","subcell");
+  if (json->keyExists("firstNumbers","data")){
+    std::vector<int> temp = json->getVector<int>("firstNumbers","data");
     std::cout << "Array" << std::endl;
     for (unsigned int i=0;i<temp.size();i++){
       std::cout << "Value " << i << ": " << temp.at(i) << std::endl;
@@ -38,6 +38,23 @@ int main(int argc, char **argv) {
   if (json->keyExists("name")){
     std::cout << "Value type of name is: " << json->getValueType("name") << std::endl;
   }
+  // init vector of json2maps
+  if (json->keyExists("characters") && 
+          json->getValueType("characters") == json_spirit::array_type){
+    std::vector<json::json2map*> jsonV = json->getVector("characters");
+    for (unsigned int i=0; i < jsonV.size(); i++){
+      // be loose with existence
+      std::cout << "Value " << i << ":" <<
+              " name: " << jsonV.at(i)->getValue<std::string>("name") <<
+              " born: " <<  jsonV.at(i)->getValue<int>("born") <<
+              std::endl;
+    }
+    // delete array
+    while (jsonV.size() > 0){
+      delete jsonV.at(jsonV.size()-1);
+      jsonV.pop_back();
+    }
+  }  
   delete json;
   return EXIT_SUCCESS;
 }

@@ -1,18 +1,31 @@
 {
-    "name": "Donald Duck",
-    "number": 5,
-    "array": [1, 2, 3, 5, 120, 41.13, "keke", {
-            "veke": 23
-        }],
-    "temp": ["a", "b", "bdsa"],
-    "subcell": {
-        "string": "This is string",
-        "number": 2.3,
-        "array": [1, 2, 3],
-        "temp": {
-            "keke": 13,
-            "new": [1, 2, 3]
+    "characters":
+            [
+                {
+                    "name": "Donald Duck",
+                    "born": 1934
+                },
+                {
+                    "name": "Scrooge McDuck",
+                    "born": 1947
+                },
+                {
+                    "name": "Mickey Mouse",
+                    "born": 1928
+                }
+            ],
+    "generator": "John Doe",
+    "age": 10,
+    "EUR2FIM": 5.94573,
+    "primeNumbers": [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 27, 31, 37],
+    "presidents": ["Ståhlberg", "Relander", "Svinhufud", "Kallio", "Ryti", "Mannerheim", "Paasikivi", "Kekkonen", "Koivisto", "Ahtisaari", "Halonen", "Niinistö"],
+    "data": {       
+        "firstNumbers": [1, 2, 3],
+        "pi": 3.14, 
+        "sports": {
+            "summer": ["football","athletics"],
+            "winter": ["ice-hockey","skiing","slalom"]            
         }
-    },
-    "boolValue": true
+    },    
+    "isThisTest": true
 }

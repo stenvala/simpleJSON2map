@@ -13,18 +13,19 @@ namespace json {
     private:        
         // recursive map
         std::map<std::string, json::json2map*> json_;        
-        bool hasOnlyValue_; // if recursive map isn't there, then hasValue_ = true
-        json_spirit::Value value_; // and this is the value                    
+        bool hasOnlyValue_; // if recursive map isn't there, then hasOnlyValue_ = true
+        json_spirit::Value value_; // and this is the value (value is stored anyway, this is not memory optimized, but redundant data is saved)
         void init(json_spirit::Value value);      
         void prettyPrint(unsigned int indent);        
     public:
         json2map(std::string fileName);
         json2map(json_spirit::Value value);        
-        // see template getValue and getVector below
+        // see templated methods below
         json_spirit::Value getValue();
         json_spirit::Value getValue(std::string val1);
         json_spirit::Value getValue(std::string val2, std::string val1);
         json_spirit::Value getValue(std::vector<std::string> stack);
+        json_spirit::Value_type getValueType();
         json_spirit::Value_type getValueType(std::string val1);
         json_spirit::Value_type getValueType(std::string val2, std::string val1);
         json_spirit::Value_type getValueType(std::vector<std::string> stack);
@@ -35,8 +36,10 @@ namespace json {
         bool keyExists(std::string val1);
         bool keyExists(std::string val1,std::string val2);
         bool keyExists(std::vector<std::string> stack);
-        void prettyPrint();                        
-        // functions with templates need to be in header file
+        void prettyPrint();               
+        virtual ~json2map();
+        // methods with templates (which need to be in header file)
+        
         // shortcuts for value getters
         template<typename Type>
         Type getValue(std::string val1){
@@ -90,8 +93,7 @@ namespace json {
                 stack.pop_back();
                 return json_[value]->getVector<Type>(stack);
             }
-        }                
-        virtual ~json2map();
+        }                        
     };
 }
 
