@@ -1,4 +1,5 @@
 CC=g++
+# In OSX with MacPorts
 CFLAGS=-c -Wall -I/opt/local/include
 INC = $(shell pkg-config)
 LIB = $(shell pkg-config)

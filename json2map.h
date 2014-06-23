@@ -1,3 +1,8 @@
+// See the LICENSE file for license information. 
+//
+// Created by Antti Stenvall <antti@stenvall.fi>.
+//
+
 #ifndef _JSON2MAP_H_
 #define _JSON2MAP_H_
 

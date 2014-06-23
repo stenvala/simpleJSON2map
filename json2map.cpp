@@ -1,3 +1,8 @@
+// See the LICENSE file for license information. 
+//
+// Created by Antti Stenvall <antti@stenvall.fi>.
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>

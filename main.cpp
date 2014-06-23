@@ -1,7 +1,9 @@
-/* 
- * Test file for testing json2map class. This works out as a tutorial too!
- * 
- */
+// See the LICENSE file for license information. 
+//
+// Created by Antti Stenvall <antti@stenvall.fi>.
+//
+// This is test file for testing json2map class. This works out as a tutorial too!
+// 
 
 #include <cstdlib>
 #include "json2map.h"
